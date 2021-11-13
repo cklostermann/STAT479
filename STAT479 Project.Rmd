@@ -20,7 +20,6 @@ library (readr)
 #load in csv file
 urlfile="https://raw.githubusercontent.com/cklostermann/STAT479-Project/main/superbowl-ads.csv"
 ad_data<-read_csv(url(urlfile))
-ad_data
 
 #make logical variables into binary integers
 ad_data$funny <- as.integer(as.logical(ad_data$funny))
