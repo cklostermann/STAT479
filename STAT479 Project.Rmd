@@ -31,4 +31,16 @@ ad_data$animals <- as.integer(as.logical(ad_data$animals))
 ad_data$use_sex <- as.integer(as.logical(ad_data$use_sex))
 
 
+#likes for ads 1-41
+likes <- c(1333,933,129,2,20,136,1469,108,1823,11,48,10,134,835,199740,2324,30,362,127,11591,91,154,282,538,203,1038,1006,21,708,256,1319,42,124,81,10,507,206,2,7,311,333)
+#dislikes for ads 1-41
+dislikes <- c(42,21,15,0,3,11,386,9,25,1,14,0,24,14,8690,131,0,12,1,627,36,39,21,15,7,21,58,0,16,8,21,3,4,2,0,8,4,0,2,12,8)
+#views for ads 1-41
+views <- c(183195,73039,142460,217,13832,27181,308037,25006,174702,1594,68623,3840,185007,145890,32895119,867687,9058,130647,4027,2115026,74315,33331,45918,307320,37359,61078,95525,4639,81007,114384,167520,5282,86027,12948,3589,32290,57706,338,3735,181069,27720)
+
+#ad likes, dislikes, views vectors to dataframe
+#run this once all 244 ads are reviewed for popularity
+ad_data$views <- views
+ad_data$likes <- likes
+ad_data$dislikes <- dislikes
 ```
