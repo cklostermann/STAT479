@@ -5,7 +5,13 @@
 data{
   int<lower = 0> n; // number of data points
   int<lower = 0, upper = 1> y[n]; // array of observed 0-1 outcomes
-  vector[n] std_x; // vector of standardized predictors
+  vector[n] funny; // vector of funny predictors
+  vector[n] quick;
+  vector[n] pat;
+  vector[n] celeb;
+  vector[n] danger;
+  vector[n] animals;
+  vector[n] sex;
   
   real x_mean; // mean of our single predictor (for re-scaling at the end)
   real<lower = 0> x_sd; // standard deviations of our single predictor (for re-scaling at the end)
