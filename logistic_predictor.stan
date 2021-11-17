@@ -26,8 +26,14 @@ data{
  
 }
 parameters{
-  real std_alpha; // intercept (on standardized scale)
-  real std_beta; // slopes (on standardized scale)
+  real alpha; // intercept 
+  real b_funny; // funny coefficient
+  real b_quick;
+  real b_pat;
+  real b_celeb;
+  real b_danger;
+  real b_animals;
+  real b_sex;
 }
 
 model{
