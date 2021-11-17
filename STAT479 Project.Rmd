@@ -55,3 +55,17 @@ ad_data$views <- views
 ad_data$likes <- likes
 ad_data$dislikes <- dislikes
 ```
+
+Fitting stan model
+```{r}
+y <- ad_data[,"popularity"]
+funny <- ad_data[,"funny"]
+quick <- ad_data[,"show_product_quickly"]
+pat <- ad_data[,"patriotic"]
+celeb <- ad_data[,"celebrity"]
+danger <- ad_data[,"danger"]
+animals <- ad_data[,"animals"]
+sex <- ad_data[,"use_sex"]
+n <- length(y)
+
+```
