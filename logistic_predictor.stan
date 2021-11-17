@@ -37,10 +37,17 @@ parameters{
 }
 
 model{
-  std_alpha ~ normal(mu_std_alpha, sigma_std_alpha);
-  std_beta ~ normal(mu_std_beta, sigma_std_beta);
+  alpha ~ normal(mu_std_alpha, sigma_std_alpha);
+  b_funny ~ normal(mu_std_beta, sigma_std_beta);
+  b_quick ~ normal(mu_std_beta, sigma_std_beta);
+  b_pat ~ normal(mu_std_beta, sigma_std_beta);
+  b_celeb ~ normal(mu_std_beta, sigma_std_beta);
+  b_danger~ normal(mu_std_beta, sigma_std_beta);
+  b_animals ~ normal(mu_std_beta, sigma_std_beta);
+  b_sex ~ normal(mu_std_beta, sigma_std_beta);
   for(i in 1:n){
-    y[i] ~ bernoulli_logit(std_alpha + std_x[i] * std_beta);
+    y[i] ~ bernoulli_logit(alpha + funny[i]*b_funny + quick[i]*b_quick + pat[i]*b_pat + celeb[i]*b_celeb + 
+    danger[i]*b_danger + animals[i]*b_animals + sex[i]*b_sex);
   }
 }
 generated quantities{
