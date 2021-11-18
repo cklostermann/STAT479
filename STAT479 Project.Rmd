@@ -55,6 +55,9 @@ views <- c(183195,73039,142460,217,13832,27181,308037,25006,174702,1594,68623,38
 ad_data$views <- views
 ad_data$likes <- likes
 ad_data$dislikes <- dislikes
+
+#clean up the data by removing all rows that have missing values
+ad_data <- na.omit(ad_data)
 ```
 
 Fitting stan model
