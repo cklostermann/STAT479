@@ -72,4 +72,23 @@ animals <- ad_data[,"animals"]
 sex <- ad_data[,"use_sex"]
 n <- length(y)
 
+#grids of potential values for each variable ??
+funny_grid <- seq(0, 1, by = .001) # create an equally space grid of potential distances for FG attempts
+n_grid <- length(x_grid)
+
+#unsure how to specify prior means, variances, and betas
+mu_std_alpha <- 1.5
+sigma_std_alpha <- 1
+mu_std_beta <- -3
+sigma_std_beta <- 0.25
+
+#not sure what we all need in this list
+ad_list <- list(n = n, y = y, funny = funny, quick = quick, pat = pat, celeb = celeb,
+                danger = danger, animals = animals, sex = sex,
+                x_mean = x_mean, x_sd = x_sd,
+                n_grid = n_grid, x_grid = x_grid,
+                mu_std_alpha = mu_std_alpha, sigma_std_alpha = sigma_std_alpha,
+                mu_std_beta = mu_std_beta, sigma_std_beta = sigma_std_beta)
+
+logistic_model <- stan_model(file = "logistic_predictor.stan")
 ```
