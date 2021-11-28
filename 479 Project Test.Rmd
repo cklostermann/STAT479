@@ -1,0 +1,120 @@
+### Project Test
+#### STAT 479
+
+```{r, include=FALSE}
+if (!require("XML")) {
+  install.packages("XML") # do this once per lifetime
+  stopifnot(require("XML")) # do this once per session
+}
+if (!require("curl")) {
+  install.packages("curl") # do this once per lifetime
+  stopifnot(require("curl")) # do this once per session
+}
+
+library(rstan)
+library(ggplot2)
+library (readr)
+library(rvest)
+library(tidyr)
+```
+
+```{r, warning=FALSE}
+#load in csv file
+urlfile="https://raw.githubusercontent.com/cklostermann/STAT479-Project/main/superbowl-ads.csv"
+ad_data<-read_csv(url(urlfile))
+
+#make logical variables into binary integers
+ad_data$funny <- as.integer(as.logical(ad_data$funny))
+ad_data$show_product_quickly <- as.integer(as.logical(ad_data$show_product_quickly))
+ad_data$patriotic <- as.integer(as.logical(ad_data$patriotic))
+ad_data$celebrity <- as.integer(as.logical(ad_data$celebrity))
+ad_data$danger <- as.integer(as.logical(ad_data$danger))
+ad_data$animals <- as.integer(as.logical(ad_data$animals))
+ad_data$use_sex <- as.integer(as.logical(ad_data$use_sex))
+
+#likes for ads 1-82
+likes <- c(1333,933,129,2,20,136,1469,108,1823,11,48,10,134,835,199740,2324,30,362,127,11591,91,154,282,538,203,1038,1006,21,708,256,1319,42,124,81,10,507,206,2,7,311,333,
+3100,21000,19,2200,142,98,11,2700,5,2500,69,0,67,1200,418,1,NA,588,58,107,112,1200,2800,455,NA,316,15,888,195000,15,1800,348,55,8,NA,5,38,0,3700,NA,112)
+
+#dislikes for ads 1-82
+dislikes <- c(42,21,15,0,3,11,386,9,25,1,14,0,24,14,8690,131,0,12,1,627,36,39,21,15,7,21,58,0,16,8,21,3,4,2,0,8,4,0,2,12,8,
+188,564,1,323,4,22,1,103,2,861,2,0,118,32,12,1,NA,178,2,5,9,31,209,49,NA,7,3,45,5900,3,30,11,2,1,NA,3,4,0,109,NA,2)
+#views for ads 1-82
+views <- c(183195,73039,142460,217,13832,27181,308037,25006,174702,1594,68623,3840,185007,145890,32895119,867687,9058,130647,4027,2115026,74315,33331,45918,307320,37359,61078,95525,4639,81007,114384,167520,5282,86027,12948,3589,32290,57706,338,3735,181069,27720,
+727825,3515809,14985,313528,71883,97456,5369,610797,1320,1685484,49677,25,37218,130149,179974,463,NA,373807,87987,12334,42978,225783,2333166,249335,NA,48499,4089,339783,12477040,8112,206942,73308,8058,6692,NA,1153,11997,148,1952508,NA,17666)
+
+#likes for ads 124-244
+#c(18,1,677,NA,NA,19000,415,1500,155,1100,8300,17,187,1,26,79,287,278,486,2000,NA,307,8,163,NA,367,30,49,2600,110,1900,101,8,184,NA,NA,94,1000,75,1,38,NA,0,340,41,612,NA,0,595,1300,1200,1,110,4,237,620,184,0,254,187,450,0,39,1300,0,2,NA,32,291,1400,9,2700,1,69,8,167,97000,2,221,217,73,3,45,51,2329,36,96,7,0,3,2388,94829,42,10,830,2,436,6,233,NA,404,43,292570,7185,24,30578,3,6,290,163,15,3476,12,253,NA,10,NA,584,15,12,348)
+#dislikes for ads 124-244
+#c(2,0,10,NA,NA,1400,58,138,13,14,246,1,5,0,3,4,11,18,11,43,NA,11,0,10,NA,15,3,2,368,6,216,7,0,8,NA,NA,5,32,18,0,2,NA,0,17,3,15,NA,0,180,122,58,0,4,1,10,194,11,0,8,15,90,0,1,134,0,1,NA,2,15,224,1,94,0,3,0,15,43000,0,62,7,7,0,7,6,84,2,5,0,0,0,40,12797,1,0,26,0,7,1,38,NA,18,1,95204,86,0,598,0,0,7,6,0,166,1,76,NA,1,NA,100,0,4,4)
+#views for ads 124-244
+#c(27765,400,135771,NA,NA,8055785,556386,583713,93031,119052,1198889,3924,64480,149,24636,18115,61749,132711,62587,406702,NA,176884,610,166562,NA,102223,11735,84392,1425851,35341,645457,46184,1411,104884,NA,NA,51233,239475,11855,133,14334,NA,0,83992,10886,238545,NA,62,731514,1060737,1048484,263,65262,483,179266,267707,35661,7134,68292,31850,95388,26,7346,956693,209,596,NA,26356,179402,359816,2895,310186,49,17292,1709,120470,23650578,213,286130,34966,69692,1025,22909,22067,769358,9646,44129,3505,171,423,500335,7675906,41001,21834,366195,1019,94995,7452,81568,40408,56198,18775,180613401,470295,5225,3982911,1041,1501,35118,112015,4150,1513008,9361,293913,NA,12215,NA,222412,1608,6569,77944)
+
+
+short_data <- ad_data[1:82,]
+#ad likes, dislikes, views vectors to dataframe
+#run this once all 244 ads are reviewed for popularity
+short_data$views <- views  #view count 
+short_data$likes <- likes
+short_data$dislikes <- dislikes
+short_data$popularity <- likes+dislikes
+
+#clean up the data by removing all rows that have missing values
+short_data <- na.omit(short_data)
+
+short_data
+```
+
+```{r}
+likes <- short_data$likes
+popularity <- short_data$popularity
+funny <- short_data$funny
+#quick <- ad_data$show_product_quickly
+#pat <- ad_data$patriotic
+#celeb <- ad_data$celebrity
+#danger <- ad_data$danger
+#animals <- ad_data$animals
+#sex <- ad_data$use_sex
+n <- length(likes)
+
+x_grid <- seq(0, 1, by = 1) # create an equally spaced grid of potential funny values
+n_grid <- length(x_grid)
+
+mu_alpha <- 1
+sigma_alpha <- 1
+mu_beta <- 0
+sigma_beta <- 0.25
+
+ad_list <- list(n=n, likes=likes, popularity=popularity, funny=funny, 
+                n_grid=n_grid, x_grid=x_grid,
+                mu_alpha=mu_alpha, sigma_alpha=sigma_alpha,
+                mu_beta=mu_beta, sigma_beta=sigma_beta)
+#ad_list <- list(n = n, likes=likes, y = y, funny = funny, quick = quick, pat = pat, celeb = celeb,
+#                danger = danger, animals = animals, sex = sex,
+#                x_mean = x_mean, x_sd = x_sd,
+#                n_grid = n_grid, x_grid = x_grid,
+#                mu_std_alpha = mu_std_alpha, sigma_std_alpha = sigma_std_alpha,
+#                mu_std_beta = mu_std_beta, sigma_std_beta = sigma_std_beta)
+
+logistic_model <- stan_model(file = "/Users/dwaneklostermann/Documents/STATS/479/479 Project Test.stan")
+
+ad_fit <- sampling(object = logistic_model, 
+                   data = ad_list)
+
+```
+
+```{r}
+summary(ad_fit)[[1]][,"Rhat"]
+summary(ad_fit)[[1]]
+
+
+alpha_samples <- rstan::extract(ad_fit, pars = "alpha")[["alpha"]]
+beta_samples <- rstan::extract(ad_fit, pars = "b_funny")[["b_funny"]]
+
+
+hist(alpha_samples, main = "alpha", breaks = 100, xlab = "alpha")
+hist(beta_samples, main = "beta", breaks = 100, xlab = "beta")
+
+post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]]
+
+```
