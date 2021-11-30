@@ -42,7 +42,7 @@ model{
   b_animals ~ normal(0, .25);
   b_sex ~ normal(0, .25);
   for(i in 1:n){
-    likes[i] ~ binomial_logit(popularity, alpha + funny[i]*b_funny + quick[i]*b_quick + pat[i]*b_pat + celeb[i]*b_celeb + 
+    likes[i] ~ binomial_logit(popularity[i], alpha + funny[i]*b_funny + quick[i]*b_quick + pat[i]*b_pat + celeb[i]*b_celeb + 
     danger[i]*b_danger + animals[i]*b_animals + sex[i]*b_sex);
   }
 }
