@@ -46,11 +46,13 @@ model{
     danger[i]*b_danger + animals[i]*b_animals + sex[i]*b_sex);
   }
 }
-//generated quantities{
-  //vector<lower = 0, upper = 1>[n_grid] prob_grid; // prob. that y = 1 at each grid point
+generated quantities{
+  vector<lower = 0, upper = 1>[n_grid] prob_grid; // likes/popularity for each combination of variables
   
-  //for(i in 1:n_grid){
-    //prob_grid[i] = inv_logit(alpha + x_grid[i] * b_funny);
-  //}
+  for(i in 1:n_grid){
+    prob_grid[i] = inv_logit(alpha + funny_grid[i] * b_funny + pat_grid[i]*b_quick + celeb_grid[i]*b_celeb +
+    danger_grid[i]*b_danger + animals_grid[i]*b_animals + sex_grid[i]*b_sex);
+  }
   
-//}
+}
+
