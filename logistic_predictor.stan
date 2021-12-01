@@ -50,7 +50,7 @@ generated quantities{
   vector<lower = 0, upper = 1>[n_grid] prob_grid; // likes/popularity for each combination of variables
   
   for(i in 1:n_grid){
-    prob_grid[i] = inv_logit(alpha + funny_grid[i] * b_funny + pat_grid[i]*b_quick + celeb_grid[i]*b_celeb +
+    prob_grid[i] = inv_logit(alpha + funny_grid[i] * b_funny + quick_grid[i]*b_quick + pat_grid[i]*b_pat + celeb_grid[i]*b_celeb +
     danger_grid[i]*b_danger + animals_grid[i]*b_animals + sex_grid[i]*b_sex);
   }
   
