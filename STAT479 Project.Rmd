@@ -20,24 +20,7 @@ library(utils)
 ```
 
 ```{r, warning=FALSE}
-#load in csv file
-urlfile="https://raw.githubusercontent.com/cklostermann/STAT479-Project/main/superbowl-ads.csv"
-ad_data<-read_csv(url(urlfile))
-
-#make logical variables into binary integers
-ad_data$funny <- as.integer(as.logical(ad_data$funny))
-ad_data$show_product_quickly <- as.integer(as.logical(ad_data$show_product_quickly))
-ad_data$patriotic <- as.integer(as.logical(ad_data$patriotic))
-ad_data$celebrity <- as.integer(as.logical(ad_data$celebrity))
-ad_data$danger <- as.integer(as.logical(ad_data$danger))
-ad_data$animals <- as.integer(as.logical(ad_data$animals))
-ad_data$use_sex <- as.integer(as.logical(ad_data$use_sex))
-
-
-
-Load in .csv file, collect data, clean data
-```{r, warning=FALSE}
-#load in csv file
+#Load in .csv file, collect data, clean data
 urlfile="https://raw.githubusercontent.com/cklostermann/STAT479-Project/main/superbowl-ads.csv"
 ad_data<-read_csv(url(urlfile))
 
