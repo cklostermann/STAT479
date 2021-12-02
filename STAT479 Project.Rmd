@@ -85,28 +85,34 @@ sex <- ad_data$use_sex
 n <- length(likes)
 
 #create dataframe of all possible combinations of variable values
-combos <- expand.grid(funny1=c(0, 1), quick1=c(0,1), pat1=c(0,1), celeb1=c(0,1),
-            danger1=c(0,1), animals1=c(0,1), sex1=c(0,1))
+#combos <- expand.grid(funny1=c(0, 1), quick1=c(0,1), pat1=c(0,1), celeb1=c(0,1),
+#            danger1=c(0,1), animals1=c(0,1), sex1=c(0,1))
 
-funny_grid <- combos$funny1 #grid of possible funny values
-quick_grid <- combos$quick1
-pat_grid <- combos$pat1
-celeb_grid <- combos$celeb1
-danger_grid <- combos$danger1
-animals_grid <- combos$animals1
-sex_grid <- combos$sex1
-n_grid <- length(funny_grid) #number of different combinations
-
-#mu_alpha <- 1
-#sigma_alpha <- 1
-#mu_b_funny <- 0
-#sigma_b_funny <- 0.25
-#mu_b_quick <- 0
+funny_grid <- c(0,1,0,0,0,0,0,0)
+quick_grid <- c(0,0,1,0,0,0,0,0)
+pat_grid <- c(0,0,0,1,0,0,0,0)
+celeb_grid <- c(0,0,0,0,1,0,0,0)
+danger_grid <- c(0,0,0,0,0,1,0,0)
+animals_grid <- c(0,0,0,0,0,0,1,0)
+sex_grid <- c(0,0,0,0,0,0,0,1)
 
 ad_list <- list(n = n, likes=likes, popularity = popularity, funny = funny, quick = quick, pat = pat, celeb = celeb,
                 danger = danger, animals = animals, sex = sex,
                 n_grid = n_grid, funny_grid = funny_grid, quick_grid=quick_grid, pat_grid=pat_grid,
                 celeb_grid=celeb_grid, danger_grid=danger_grid, animals_grid=animals_grid, sex_grid=sex_grid)
+
+```
+
+Prior Predictive Checks
+
+```{r}
+alpha <- rnorm(1,1,n=100)
+b_funny <- rnorm(0,.25,n=100)
+inv_log <- function(x) {
+  prob <- 1/(1+exp((-1*(alpha+b_funny*x))))
+  return(prob)
+}
+hist(1/(1+exp((-1*(alpha+b_funny*c(0,1))))))
 
 ```
 
