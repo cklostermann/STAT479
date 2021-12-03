@@ -106,13 +106,86 @@ ad_list <- list(n = n, likes=likes, popularity = popularity, funny = funny, quic
 Prior Predictive Checks
 
 ```{r}
-alpha <- rnorm(1,1,n=100)
-b_funny <- rnorm(0,.25,n=100)
-inv_log <- function(x) {
-  prob <- 1/(1+exp((-1*(alpha+b_funny*x))))
-  return(prob)
-}
-hist(1/(1+exp((-1*(alpha+b_funny*c(0,1))))))
+#prior check for alpha
+alpha <- rnorm(3.27,.1,n=10000)
+min(1/(1+exp((-1*(alpha)))))
+mean(1/(1+exp((-1*(alpha)))))
+max(1/(1+exp((-1*(alpha)))))
+hist(1/(1+exp((-1*(alpha)))), breaks=100)
+#check popularity probability distribution when funny=0, show_product_quickly=0,...,use_sex=0
+a <- ad_data$funny==0 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+      ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==0
+min(ad_data$likes[a] / ad_data$popularity[a])
+mean(ad_data$likes[a] / ad_data$popularity[a])
+max(ad_data$likes[a] / ad_data$popularity[a])
+#note that our min and max popularity probability values are within the interval of our prior, and the means are very close
+
+
+b_funny <- rnorm(0,.5,n=10000)
+min(1/(1+exp((-1*(alpha+b_funny*1)))))
+mean(1/(1+exp((-1*(alpha+b_funny*1)))))
+max(1/(1+exp((-1*(alpha+b_funny*1)))))
+#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
+a <- ad_data$funny==1 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+       ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==0
+min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+
+b_quick <- rnorm(0,2.75,n=10000)
+min(1/(1+exp((-1*(alpha+b_quick*1)))))
+mean(1/(1+exp((-1*(alpha+b_quick*1)))))
+max(1/(1+exp((-1*(alpha+b_quick*1)))))
+#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
+a <- ad_data$funny==0 & ad_data$show_product_quickly==1 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+       ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==0
+min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+
+b_pat <- rnorm(0,.5,n=10000)
+min(1/(1+exp((-1*(alpha+b_pat*1)))))
+mean(1/(1+exp((-1*(alpha+b_pat*1)))))
+max(1/(1+exp((-1*(alpha+b_pat*1)))))
+#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
+a <- ad_data$funny==0 & ad_data$show_product_quickly==0 & ad_data$patriotic==1 & ad_data$celebrity==0 &
+       ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==0
+min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+
+b_celeb <- rnorm(0,.25,n=10000)
+min(1/(1+exp((-1*(alpha+b_celeb*1)))))
+mean(1/(1+exp((-1*(alpha+b_celeb*1)))))
+max(1/(1+exp((-1*(alpha+b_celeb*1)))))
+#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
+a <- ad_data$funny==0 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==1 &
+       ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==0
+min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+
+b_danger <- rnorm(0,.5,n=10000)
+min(1/(1+exp((-1*(alpha+b_danger*1)))))
+mean(1/(1+exp((-1*(alpha+b_danger*1)))))
+max(1/(1+exp((-1*(alpha+b_danger*1)))))
+#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
+a <- ad_data$funny==1 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+       ad_data$danger==1 & ad_data$animals==0 & ad_data$use_sex==0
+min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+
+b_sex <- rnorm(0,.5,n=10000)
+min(1/(1+exp((-1*(alpha+b_sex*1)))))
+mean(1/(1+exp((-1*(alpha+b_sex*1)))))
+max(1/(1+exp((-1*(alpha+b_sex*1)))))
+#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
+a <- ad_data$funny==0 & ad_data$show_product_quickly==1 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+       ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==1
+min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
 
 ```
 
