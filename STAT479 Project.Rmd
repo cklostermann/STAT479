@@ -88,13 +88,14 @@ n <- length(likes)
 #combos <- expand.grid(funny1=c(0, 1), quick1=c(0,1), pat1=c(0,1), celeb1=c(0,1),
 #            danger1=c(0,1), animals1=c(0,1), sex1=c(0,1))
 
-funny_grid <- c(0,1,0,0,0,0,0,0)
-quick_grid <- c(0,0,1,0,0,0,0,0)
-pat_grid <- c(0,0,0,1,0,0,0,0)
-celeb_grid <- c(0,0,0,0,1,0,0,0)
-danger_grid <- c(0,0,0,0,0,1,0,0)
-animals_grid <- c(0,0,0,0,0,0,1,0)
-sex_grid <- c(0,0,0,0,0,0,0,1)
+funny_grid <- c(0,1,0,0,0,0,0,0,1,1)
+quick_grid <- c(0,0,1,0,0,0,0,0,1,1)
+pat_grid <- c(0,0,0,1,0,0,0,0,0,0)
+celeb_grid <- c(0,0,0,0,1,0,0,0,0,0)
+danger_grid <- c(0,0,0,0,0,1,0,0,0,0)
+animals_grid <- c(0,0,0,0,0,0,1,0,0,1)
+sex_grid <- c(0,0,0,0,0,0,0,1,0,0)
+n_grid <- length(funny_grid) #number of different combinations
 
 ad_list <- list(n = n, likes=likes, popularity = popularity, funny = funny, quick = quick, pat = pat, celeb = celeb,
                 danger = danger, animals = animals, sex = sex,
@@ -211,5 +212,62 @@ hist(b_funny_samples, main = "b_funny", breaks = 100, xlab = "b_funny")
 
 post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]]
 hist(post_pred_grid, main="Posterior Predictive Popularity Probability", breaks=100, xlab=expression(pi))
+
+```
+
+Assess predictor affects on ad popularity
+
+```{r}
+#prob_grid for each different set of predictors
+no_predictors_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,1]
+funny_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,2]
+quick_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,3]
+pat_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,4]
+celeb_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,5]
+danger_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,6]
+animals_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,7]
+sex_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,8]
+funny_quick_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,9]
+animals_funny_quick_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,10]
+
+#Funny
+hist(no_predictors_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Being Funny on Ad Popularity', xlim = c(0.85,0.94), xlab='x',ylim = c(0,500), breaks = 30)
+hist(funny_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 30)
+legend('topleft', c('Not Funny', 'Funny'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5)))
+
+#Quick (has no effect on ad popularity)
+hist(no_predictors_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Showing the Product Quickly on Ad Popularity', xlim = c(0.915,0.935), xlab='x', breaks = 100)
+hist(quick_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 100)
+legend('topleft', c('Not Quick', 'Quick'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5)))
+
+#Patriotic
+hist(no_predictors_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Patriotism on Ad Popularity', xlim = c(0.82,0.94), ylim = c(0,550),xlab='x', breaks = 30)
+hist(pat_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 30)
+legend('topleft', c('Not Patriotic', 'Patriotic'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5)))
+
+#Celeb (plot looks weird, maybe don't show this one)
+hist(no_predictors_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Celebs on Ad Popularity', xlim = c(0.90,0.99), xlab='x', breaks = 30)
+hist(celeb_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 30)
+legend('topleft', c('No Celeb', 'Celeb'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5)))
+
+#Danger (plot looks weird, maybe don't show this one)
+hist(no_predictors_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Danger on Ad Popularity', xlim = c(0.90,0.99), xlab='x', breaks = 30)
+hist(danger_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 30)
+legend('topleft', c('No Danger', 'Danger'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5)))
+
+#Animals
+hist(no_predictors_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Animals on Ad Popularity', xlim = c(0.91,0.95), ylim = c(0, 550), xlab='x', breaks = 30)
+hist(animals_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 30)
+legend('topleft', c('No Animals', 'Animals'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5)))
+
+#Sex
+hist(no_predictors_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Sex on Ad Popularity', xlim = c(0.91,0.96), ylim = c(0,600), xlab='x', breaks = 30)
+hist(sex_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 30)
+legend('topleft', c('No Sex', 'Sex'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5)))
+
+#Effect of Animals on Funny and Quick Ad
+hist(funny_quick_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Animals on Funny and Quick Ad Popularity', xlab='x', xlim = c(0.85,0.91), breaks = 30)
+hist(animals_funny_quick_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 30)
+legend('topleft', c('No Animals', 'Animals'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5)))
 
 ```
