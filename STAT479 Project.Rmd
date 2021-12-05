@@ -12,7 +12,7 @@ if (!require("curl")) {
 }
 
 library(rstan)
-library(ggplot2)
+library(dplyr)
 library (readr)
 library(rvest)
 library(tidyr)
