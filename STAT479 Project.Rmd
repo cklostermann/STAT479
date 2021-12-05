@@ -70,6 +70,19 @@ ad_data$popularity <- likes+dislikes
 ad_data <- na.omit(ad_data)
 ```
 
+Exploring the data
+
+```{r}
+#likes/likes+dislikes by year
+boxplot(likes/popularity~year, data=ad_data, ylab="Popularity Probability", main="Ad Popularity Probability 2000-2020")
+
+#median of pop probs are all similar, which means it is probably not worth it to build a hierarchical model by year
+ad_years <- ad_data %>%
+  group_by(year) %>%
+  summarise(median=median(na.omit(likes/popularity)))
+```
+
+
 Set up parameters to be used in .stan file
 
 ```{r}
@@ -126,67 +139,89 @@ b_funny <- rnorm(0,.5,n=10000)
 min(1/(1+exp((-1*(alpha+b_funny*1)))))
 mean(1/(1+exp((-1*(alpha+b_funny*1)))))
 max(1/(1+exp((-1*(alpha+b_funny*1)))))
-#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
-a <- ad_data$funny==1 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+b1 <- ad_data$funny==1 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==0 &
        ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==0
-min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+min(na.omit(ad_data$likes[b1] / ad_data$popularity[b1]))
+mean(na.omit(ad_data$likes[b1] / ad_data$popularity[b1]))
+max(na.omit(ad_data$likes[b1] / ad_data$popularity[b1]))
 
 b_quick <- rnorm(0,2.75,n=10000)
 min(1/(1+exp((-1*(alpha+b_quick*1)))))
 mean(1/(1+exp((-1*(alpha+b_quick*1)))))
 max(1/(1+exp((-1*(alpha+b_quick*1)))))
-#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
-a <- ad_data$funny==0 & ad_data$show_product_quickly==1 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+b2 <- ad_data$funny==0 & ad_data$show_product_quickly==1 & ad_data$patriotic==0 & ad_data$celebrity==0 &
        ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==0
-min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+min(na.omit(ad_data$likes[b2] / ad_data$popularity[b2]))
+mean(na.omit(ad_data$likes[b2] / ad_data$popularity[b2]))
+max(na.omit(ad_data$likes[b2] / ad_data$popularity[b2]))
 
 b_pat <- rnorm(0,.5,n=10000)
 min(1/(1+exp((-1*(alpha+b_pat*1)))))
 mean(1/(1+exp((-1*(alpha+b_pat*1)))))
 max(1/(1+exp((-1*(alpha+b_pat*1)))))
-#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
-a <- ad_data$funny==0 & ad_data$show_product_quickly==0 & ad_data$patriotic==1 & ad_data$celebrity==0 &
+b3 <- ad_data$funny==0 & ad_data$show_product_quickly==0 & ad_data$patriotic==1 & ad_data$celebrity==0 &
        ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==0
-min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+min(na.omit(ad_data$likes[b3] / ad_data$popularity[b3]))
+mean(na.omit(ad_data$likes[b3] / ad_data$popularity[b3]))
+max(na.omit(ad_data$likes[b3] / ad_data$popularity[b3]))
 
 b_celeb <- rnorm(0,.25,n=10000)
 min(1/(1+exp((-1*(alpha+b_celeb*1)))))
 mean(1/(1+exp((-1*(alpha+b_celeb*1)))))
 max(1/(1+exp((-1*(alpha+b_celeb*1)))))
-#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
-a <- ad_data$funny==0 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==1 &
+b4 <- ad_data$funny==0 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==1 &
        ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==0
-min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+min(na.omit(ad_data$likes[b4] / ad_data$popularity[b4]))
+mean(na.omit(ad_data$likes[b4] / ad_data$popularity[b4]))
+max(na.omit(ad_data$likes[b4] / ad_data$popularity[b4]))
 
 b_danger <- rnorm(0,.5,n=10000)
 min(1/(1+exp((-1*(alpha+b_danger*1)))))
 mean(1/(1+exp((-1*(alpha+b_danger*1)))))
 max(1/(1+exp((-1*(alpha+b_danger*1)))))
-#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
-a <- ad_data$funny==1 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+b5 <- ad_data$funny==1 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==0 &
        ad_data$danger==1 & ad_data$animals==0 & ad_data$use_sex==0
-min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+min(na.omit(ad_data$likes[b5] / ad_data$popularity[b5]))
+mean(na.omit(ad_data$likes[b5] / ad_data$popularity[b5]))
+max(na.omit(ad_data$likes[b5] / ad_data$popularity[b5]))
+
+b_animals <- rnorm(0,.5,n=10000)
+min(1/(1+exp((-1*(alpha+b_animals*1)))))
+mean(1/(1+exp((-1*(alpha+b_animals*1)))))
+max(1/(1+exp((-1*(alpha+b_animals*1)))))
+b6 <- ad_data$funny==0 & ad_data$show_product_quickly==0 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+       ad_data$danger==0 & ad_data$animals==1 & ad_data$use_sex==0
+min(na.omit(ad_data$likes[b6] / ad_data$popularity[b6]))
+mean(na.omit(ad_data$likes[b6] / ad_data$popularity[b6]))
+max(na.omit(ad_data$likes[b6] / ad_data$popularity[b6]))
 
 b_sex <- rnorm(0,.5,n=10000)
 min(1/(1+exp((-1*(alpha+b_sex*1)))))
 mean(1/(1+exp((-1*(alpha+b_sex*1)))))
 max(1/(1+exp((-1*(alpha+b_sex*1)))))
-#hist(1/(1+exp((-1*(alpha+b_funny*1)))))
-a <- ad_data$funny==0 & ad_data$show_product_quickly==1 & ad_data$patriotic==0 & ad_data$celebrity==0 &
+b7 <- ad_data$funny==0 & ad_data$show_product_quickly==1 & ad_data$patriotic==0 & ad_data$celebrity==0 &
        ad_data$danger==0 & ad_data$animals==0 & ad_data$use_sex==1
-min(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-mean(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
-max(na.omit(ad_data$likes[a] / ad_data$popularity[a]))
+min(na.omit(ad_data$likes[b7] / ad_data$popularity[b7]))
+mean(na.omit(ad_data$likes[b7] / ad_data$popularity[b7]))
+max(na.omit(ad_data$likes[b7] / ad_data$popularity[b7]))
+
+png("prior_distributions1.png", width = 6, height = 6, units = "in", res = 300)
+par(mfrow=c(2,2))
+hist(alpha, breaks=100, xlab=expression(alpha), main="alpha prior distribution")
+hist(b_funny, breaks=100, xlab=expression(beta_1), main="beta_funny prior")
+dev.off()
+
+png("prior_distributions2.png", width = 6, height = 6, units = "in", res = 300)
+par(mfrow=c(2,2))
+hist(b_quick, breaks=100, xlab="beta_2", main="beta_quick prior")
+hist(b_celeb, breaks=100, xlab=expression(beta_4), main="beta_celeb prior")
+dev.off()
+
+png("prior_probabilites.png", width = 6, height = 6, units = "in", res = 300)
+par(mfrow=c(1,2))
+hist(1/(1+exp((-1*(alpha)))), breaks=100, xlab=expression(pi),main="Prior Baseline Probability")
+hist(1/(1+exp((-1*(alpha+b_funny*1)))), breaks=100, xlab=expression(pi), main="Prior Probability b_funny=1")
+dev.off()
 
 ```
 
