@@ -61,7 +61,7 @@ views <- c(183195,73039,142460,217,13832,27181,308037,25006,174702,1594,68623,38
 
 #ad likes, dislikes, views vectors to dataframe
 #run this once all 244 ads are reviewed for popularity
-ad_data$views <- views 
+ad_data$views <- views / 10000
 ad_data$likes <- likes
 ad_data$dislikes <- dislikes
 ad_data$popularity <- likes+dislikes
@@ -110,7 +110,7 @@ animals_grid <- c(0,0,0,0,0,0,1,0,0,1)
 sex_grid <- c(0,0,0,0,0,0,0,1,0,0)
 n_grid <- length(funny_grid) #number of different combinations
 
-ad_list <- list(n = n, likes=likes, popularity = popularity, funny = funny, quick = quick, pat = pat, celeb = celeb,
+ad_list <- list(n = n, views = views, likes=likes, popularity = popularity, funny = funny, quick = quick, pat = pat, celeb = celeb,
                 danger = danger, animals = animals, sex = sex,
                 n_grid = n_grid, funny_grid = funny_grid, quick_grid=quick_grid, pat_grid=pat_grid,
                 celeb_grid=celeb_grid, danger_grid=danger_grid, animals_grid=animals_grid, sex_grid=sex_grid)
