@@ -86,6 +86,7 @@ ad_years <- ad_data %>%
 Set up parameters to be used in .stan file
 
 ```{r}
+views <- ad_data$views
 likes <- ad_data$likes
 popularity <- ad_data$popularity
 funny <- ad_data$funny
