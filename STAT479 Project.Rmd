@@ -270,11 +270,17 @@ hist(1/(1 + exp(-1 * alpha_samples)), breaks=100, main = "Posterior baseline pop
 # We can look at the posterior predictive probabilities at each combination of predictors
 post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]]
 
-hist(pop_prob_prior, main="Prior Predictive Popularity Probability", breaks=100, xlab=expression(pi))
+png("comparing_post_and_prior.png", width = 6, height = 6, units = "in", res = 300)
+par(mfrow=c(2,1))
+hist(pop_prob_prior, main="Prior Predictive Popularity Probability", breaks=100, xlab=expression(pi), xlim=c(.8,1))
+abline(v = mean(pop_prob_prior), col = 'cyan', lty = 2, lwd = 1.5)
+abline(v=mean(post_pred_grid), col='blue', lty=2, lwd=1.5)
+legend('topleft', c("Prior Mean","Posterior Mean"), col=c('cyan','blue'), lty=c(2,2), lwd=c(1.5,1.5))
 hist(post_pred_grid, main="Posterior Predictive Popularity Probability", breaks=100, xlab=expression(pi))
 abline(v = mean(pop_prob_prior), col = 'cyan', lty = 2, lwd = 1.5)
 abline(v=mean(post_pred_grid), col='blue', lty=2, lwd=1.5)
 legend('topleft', c("Prior Mean","Posterior Mean"), col=c('cyan','blue'), lty=c(2,2), lwd=c(1.5,1.5))
+dev.off()
 
 #posterior mean and 95% confidence interval for each combination of predictors
 post_pred_mean <- apply(post_pred_grid, MARGIN = 2, FUN = mean)
