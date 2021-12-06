@@ -17,6 +17,7 @@ library (readr)
 library(rvest)
 library(tidyr)
 library(utils)
+library(knitr)
 ```
 
 ```{r, warning=FALSE}
@@ -286,6 +287,9 @@ dev.off()
 post_pred_mean <- apply(post_pred_grid, MARGIN = 2, FUN = mean)
 post_pred_l95 <- apply(post_pred_grid, MARGIN = 2, FUN = quantile, probs = 0.025)
 post_pred_u95 <- apply(post_pred_grid, MARGIN = 2, FUN = quantile, probs = 0.975)
+combination <- c("Baseline","Funny", "Show_Product_Quickly", "Patriotic", "Celebrity", "Danger", "Animals", "Sex", "Funny, Quick", "Funny, Quick, Animals", "Patriotic, Animals, Sex")
+df <- data.frame(combination,post_pred_mean,post_pred_l95,post_pred_u95)
+kable(df)
 ```
 
 Assess predictor affects on ad popularity
