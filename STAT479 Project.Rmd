@@ -102,13 +102,13 @@ n <- length(likes)
 #combos <- expand.grid(funny1=c(0, 1), quick1=c(0,1), pat1=c(0,1), celeb1=c(0,1),
 #            danger1=c(0,1), animals1=c(0,1), sex1=c(0,1))
 
-funny_grid <- c(0,1,0,0,0,0,0,0,1,1)
-quick_grid <- c(0,0,1,0,0,0,0,0,1,1)
-pat_grid <- c(0,0,0,1,0,0,0,0,0,0)
-celeb_grid <- c(0,0,0,0,1,0,0,0,0,0)
-danger_grid <- c(0,0,0,0,0,1,0,0,0,0)
-animals_grid <- c(0,0,0,0,0,0,1,0,0,1)
-sex_grid <- c(0,0,0,0,0,0,0,1,0,0)
+funny_grid <- c(0,1,0,0,0,0,0,0,1,1,0)
+quick_grid <- c(0,0,1,0,0,0,0,0,1,1,0)
+pat_grid <- c(0,0,0,1,0,0,0,0,0,0,1)
+celeb_grid <- c(0,0,0,0,1,0,0,0,0,0,0)
+danger_grid <- c(0,0,0,0,0,1,0,0,0,0,0)
+animals_grid <- c(0,0,0,0,0,0,1,0,0,1,1)
+sex_grid <- c(0,0,0,0,0,0,0,1,0,0,1)
 n_grid <- length(funny_grid) #number of different combinations
 
 ad_list <- list(n = n, views = views, likes=likes, popularity = popularity, funny = funny, quick = quick, pat = pat, celeb = celeb,
@@ -241,16 +241,31 @@ ad_fit <- sampling(object = logistic_model,
 Post-processing
 
 ```{r}
+#look at Rhat values, then at general summary to get mean predictor values
 summary(ad_fit)[[1]][,"Rhat"]
+summary(ad_fit)[[1]]
 
+
+#extract a few posterior predictors to look at  
 alpha_samples <- rstan::extract(ad_fit, pars = "alpha")[["alpha"]]
-hist(alpha_samples, main = "alpha", breaks = 100, xlab = "alpha")
-
 b_funny_samples <- rstan::extract(ad_fit, pars = "b_funny")[["b_funny"]]
-hist(b_funny_samples, main = "b_funny", breaks = 100, xlab = "b_funny")
+b_quick_samples <- rstan::extract(ad_fit, pars = "b_quick")[["b_quick"]]
+b_celeb_samples <- rstan::extract(ad_fit, pars = "b_celeb")[["b_celeb"]]
+
+
+png("post_distributions.png", width = 6, height = 6, units = "in", res = 300)
+par(mfrow=c(2,2))
+hist(alpha_samples, main = "posterior alpha", breaks = 100, xlab = "alpha")
+hist(b_funny_samples, main = "posterior b_funny", breaks = 100, xlab = "beta_1")
+hist(b_quick_samples, main = "posterior b_quick", breaks = 100, xlab = "beta_2")
+hist(b_funny_samples, main = "posterior b_celeb", breaks = 100, xlab = "beta_4")
+dev.off()
+
 
 #posterior baseline popularity probabilities
-hist(1/(1 + exp(-1 * alpha_samples)), breaks=100, main = "Posterior baseline popularity probabilities")
+hist(1/(1 + exp(-1 * alpha_samples)), breaks=100, main = "Posterior baseline popularity probabilities", xlab=expression(pi))
+
+
 
 # We can look at the posterior predictive probabilities at each combination of predictors
 post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]]
@@ -261,6 +276,7 @@ abline(v = mean(pop_prob_prior), col = 'cyan', lty = 2, lwd = 1.5)
 abline(v=mean(post_pred_grid), col='blue', lty=2, lwd=1.5)
 legend('topleft', c("Prior Mean","Posterior Mean"), col=c('cyan','blue'), lty=c(2,2), lwd=c(1.5,1.5))
 
+#posterior mean and 95% confidence interval for each combination of predictors
 post_pred_mean <- apply(post_pred_grid, MARGIN = 2, FUN = mean)
 post_pred_l95 <- apply(post_pred_grid, MARGIN = 2, FUN = quantile, probs = 0.025)
 post_pred_u95 <- apply(post_pred_grid, MARGIN = 2, FUN = quantile, probs = 0.975)
@@ -280,6 +296,7 @@ animals_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid
 sex_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,8]
 funny_quick_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,9]
 animals_funny_quick_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,10]
+pat_animals_sex_post_pred_grid <- rstan::extract(ad_fit, pars = "prob_grid")[["prob_grid"]][,11]
 
 #Funny
 hist(no_predictors_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Being Funny on Ad Popularity', xlim = c(0.85,0.94), xlab='x',ylim = c(0,500), breaks = 30)
@@ -320,5 +337,12 @@ legend('topleft', c('No Sex', 'Sex'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5))
 hist(funny_quick_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Animals on Funny and Quick Ad Popularity', xlab='x', xlim = c(0.85,0.91), breaks = 30)
 hist(animals_funny_quick_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 30)
 legend('topleft', c('No Animals', 'Animals'), fill=c(rgb(1,0,0,0.5), col=rgb(0,0,1,0.5)))
+
+#effect of patriotic, sex, animals ad
+hist(pat_post_pred_grid, col=rgb(1,0,0,0.5), main='Effect of Patriotic, Animals, and Sex on Ad Popularity', xlab=expression(pi), breaks = 30, xlim=c(.84,.96), ylim=c(0,600))
+hist(sex_post_pred_grid, col="cyan", breaks = 30, add=TRUE)
+hist(animals_post_pred_grid, col="green", breaks=30, add=TRUE)
+hist(pat_animals_sex_post_pred_grid, col=rgb(0,0,1,0.5), add=TRUE, breaks = 30)
+legend('topleft', c('Patriotic', 'Sex', 'Animals','Patriotic, Animals, Sex'), fill=c(rgb(1,0,0,0.5),'cyan',"green",col=rgb(0,0,1,0.5)))
 
 ```
